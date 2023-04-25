@@ -2,8 +2,9 @@ name: hello-world
 on: push
 jobs:
   my-job:
-    runs-on: ubuntu-latest
+    runs-on: s390x
     steps:
+      - uses: actions/checkout@v3
       - name: my-step
         run: echo "${ACTIONS_RUNTIME_URL}_apis/pipelines/workflows/${GITHUB_RUN_ID}/artifacts"
 
