@@ -1,0 +1,70 @@
+name: Reusable test workflow
+
+on:
+  workflow_call:
+    inputs:
+      bool_var:
+        required: true
+        type: boolean
+      string_var:
+        required: true
+        type: string
+
+
+jobs:
+  test_boolean:
+    name: "Test boolean behaviour in reusable workflow"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: bool_var is true
+        if: ${{ inputs.bool_var == true }}
+        shell: bash
+        run: echo bool_var is true
+      - name: bool_var is 'true'
+        if: ${{ inputs.bool_var == 'true' }}
+        shell: bash
+        run: echo bool_var is 'true'
+      - name: string_var is true
+        if: ${{ fromJSON(inputs.string_var) == true }}
+        shell: bash
+        run: echo string_var is true
+      - name: string_var is 'true'
+        if: ${{ fromJSON(inputs.string_var) == 'true' }}
+        shell: bash
+        run: echo string_var is 'true'
+      - name: bool_var is false
+        if: ${{ inputs.bool_var == false }}
+        shell: bash
+        run: echo bool_var is false
+      - name: bool_var is 'false'
+        if: ${{ inputs.bool_var == 'false' }}
+        shell: bash
+        run: echo bool_var is 'false'
+      - name: string_var is false
+        if: ${{ fromJSON(inputs.string_var) == false }}
+        shell: bash
+        run: echo string_var is false
+      - name: string_var is 'false'
+        if: ${{ fromJSON(inputs.string_var) == 'false' }}
+        shell: bash
+        run: echo string_var is 'false' 
+      - name: Testing bool_var
+        shell: bash
+        run: |
+            echo "bool_var" ${{ inputs.bool_var }}
+            exit 1
+        # https://github.com/actions/runner/issues/1483#issuecomment-1031671517
+        # booleans are weird in GH.
+        continue-on-error: ${{ inputs.bool_var }}
+
+      - name: Testing string_var
+        shell: bash
+        run: |
+            echo "string_var: " ${{ inputs.string_var }}
+            echo "fromJSON(string_var): "  ${{ fromJSON(inputs.string_var) }}
+            exit 1
+        continue-on-error: ${{ fromJSON(inputs.string_var) }}
+      - name: Final step
+        shell: bash
+        run: echo "the end"
+
