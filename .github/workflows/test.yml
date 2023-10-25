@@ -1,9 +1,14 @@
 name: hello-world
-on: push
+on:
+  pull_request:
+
 jobs:
   my-job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: my-step
-        run: echo "${ACTIONS_RUNTIME_URL}_apis/pipelines/workflows/${GITHUB_RUN_ID}/artifacts"
-
+    uses: ./.github/workflows/reusable.yml
+    strategy:
+      matrix:
+        val: [true, false]
+        val2: [true, false]
+    with:
+      bool_var: ${{ matrix.val }}
+      string_var: ${{ toJSON(matrix.val2) }}
